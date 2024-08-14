@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemCrud.DTOs;
 using SistemCrud.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace SistemCrud.Controllers
 {
@@ -8,11 +10,11 @@ namespace SistemCrud.Controllers
     [Route("api/[controller]")]
     public class TimeTrackerController : ControllerBase
     {
-        private readonly TimeTrackerService _service;
+        private readonly TimeTrackerService _timeTrackerService;
 
-        public TimeTrackerController(TimeTrackerService service)
+        public TimeTrackerController(TimeTrackerService timeTrackerService)
         {
-            _service = service;
+            _timeTrackerService = timeTrackerService;
         }
 
         [HttpGet]
@@ -20,7 +22,7 @@ namespace SistemCrud.Controllers
         {
             try
             {
-                var trackings = await _service.GetAllTrackingsAsync();
+                var trackings = await _timeTrackerService.GetAllTrackingsAsync();
 
                 if (trackings != null && trackings.Any())
                 {
@@ -44,76 +46,44 @@ namespace SistemCrud.Controllers
         [HttpPost("start")]
         public async Task<IActionResult> StartTracking([FromBody] TimeTrackerStartDTO dto)
         {
-            if (dto == null)
-            {
-                return BadRequest("Dados inválidos.");
-            }
-
             try
             {
-                var result = await _service.StartTrackingAsync(dto);
-
+                var result = await _timeTrackerService.StartTrackingAsync(dto);
                 if (result)
                 {
-                    return Ok("Rastreamento iniciado com sucesso.");
+                    return Ok(new { message = "Time tracking started successfully." });
                 }
-                else
-                {
-                    return StatusCode(500, "Falha ao iniciar o rastreamento. Por favor, tente novamente mais tarde.");
-                }
+                return BadRequest(new { message = "Failed to start time tracking." });
             }
-            catch (Exception ex) when (ex.Message.Contains("Tarefa não encontrada"))
+            catch (InvalidOperationException ex)
             {
-                return NotFound("Tarefa não encontrada. Verifique o ID da tarefa.");
-            }
-            catch (Exception ex) when (ex.Message.Contains("Colaborador não encontrado"))
-            {
-                return NotFound("Colaborador não encontrado. Verifique o ID do colaborador.");
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                var innerExceptionMessage = ex.InnerException?.Message ?? "Sem detalhes adicionais.";
-                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}. Detalhes adicionais: {innerExceptionMessage}");
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
-
         }
 
         [HttpPost("end")]
         public async Task<IActionResult> EndTracking([FromBody] TimeTrackerEndDTO dto)
         {
-            if (dto == null)
-            {
-                return BadRequest("Dados inválidos.");
-            }
-
             try
             {
-                var result = await _service.EndTrackingAsync(dto);
-
+                var result = await _timeTrackerService.EndTrackingAsync(dto);
                 if (result)
                 {
-                    return Ok("Rastreamento finalizado com sucesso.");
+                    return Ok(new { message = "Time tracking ended successfully." });
                 }
-                else
-                {
-                    return StatusCode(500, "Falha ao finalizar o rastreamento. Por favor, tente novamente mais tarde.");
-                }
+                return BadRequest(new { message = "Failed to end time tracking." });
             }
-            catch (Exception ex) when (ex.Message.Contains("Tarefa não encontrada"))
+            catch (InvalidOperationException ex)
             {
-                return NotFound("Tarefa não encontrada. Verifique o ID da tarefa.");
-            }
-            catch (Exception ex) when (ex.Message.Contains("Colaborador não encontrado"))
-            {
-                return NotFound("Colaborador não encontrado. Verifique o ID do colaborador.");
-            }
-            catch (Exception ex) when (ex.Message.Contains("Registro de tempo não encontrado ou já finalizado"))
-            {
-                return NotFound("Registro de tempo não encontrado ou já finalizado. Verifique se o rastreamento foi iniciado e não está finalizado.");
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
 
@@ -122,24 +92,16 @@ namespace SistemCrud.Controllers
         {
             try
             {
-                var result = await _service.DeleteTrackingAsync(id);
-
+                var result = await _timeTrackerService.DeleteTrackingAsync(id);
                 if (result)
                 {
-                    return Ok("Rastreamento deletado com sucesso.");
+                    return Ok(new { message = "Time tracking deleted successfully." });
                 }
-                else
-                {
-                    return StatusCode(500, "Falha ao deletar o rastreamento. Por favor, tente novamente mais tarde.");
-                }
-            }
-            catch (Exception ex) when (ex.Message.Contains("Registro de tempo não encontrado"))
-            {
-                return NotFound("Registro de tempo não encontrado. Verifique o ID fornecido.");
+                return BadRequest(new { message = "Failed to delete time tracking." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
     }

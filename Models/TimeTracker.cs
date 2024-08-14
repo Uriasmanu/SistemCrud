@@ -23,7 +23,7 @@ namespace SistemCrud.Models
         {
             if (EndTime.HasValue && EndTime.Value < StartTime)
             {
-                throw new InvalidOperationException("End time must be greater than or equal to start time.");
+                throw new InvalidOperationException("A hora de término deve ser maior ou igual à hora de início.");
             }
 
             return EndTime.HasValue ? EndTime.Value - StartTime : (TimeSpan?)null;
