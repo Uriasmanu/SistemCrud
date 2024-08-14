@@ -12,6 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Configurações dos serviços
 builder.Services.AddControllersWithViews();
 
+// Adiciona serviços do Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddScoped<UsuarioServices>();
 //builder.Services.AddScoped<CollaboratorServices>();
 //builder.Services.AddScoped<TarefaService>();
@@ -52,21 +56,21 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Configure o Swagger
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+        c.RoutePrefix = string.Empty; // Define a URL base para o Swagger UI como raiz
+    });
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseCors("AllowSpecificOrigin");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
