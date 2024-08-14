@@ -111,6 +111,55 @@ namespace SistemCrud.Services
             var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
+        public async Task<bool> UpdateTrackingAsync(Guid id, TimeTrackerUpdateDTO dto)
+        {
+            // Encontrar o TimeTracker pelo ID
+            var timeTracker = await _dbContext.TimeTrackers.FindAsync(id);
+            if (timeTracker == null)
+            {
+                throw new Exception("Registro de tempo não encontrado.");
+            }
+
+            // Verificar se o colaborador existe
+            var colaborador = await _dbContext.Collaborators.FindAsync(dto.CollaboratorId);
+            if (colaborador == null)
+            {
+                throw new Exception("Colaborador não encontrado.");
+            }
+
+            // Verificar se a tarefa existe
+            var tarefa = await _dbContext.Tarefas.FindAsync(dto.TarefasId);
+            if (tarefa == null)
+            {
+                throw new Exception("Tarefa não encontrada.");
+            }
+
+            // Atualizar os campos de data de início e fim
+            timeTracker.StartTime = dto.StartTime;
+            timeTracker.EndTime = dto.EndTime;
+
+            // Verificar se a duração excede 24 horas
+            if (timeTracker.GetDuration().HasValue && timeTracker.GetDuration().Value.TotalHours > 24)
+            {
+                throw new InvalidOperationException("A duração não pode exceder 24 horas.");
+            }
+
+            // Verificar se o colaborador já está rastreando uma tarefa
+            var currentTracking = await _dbContext.TimeTrackers
+                .Where(tt => tt.CollaboratorId == dto.CollaboratorId && tt.EndTime == null && tt.Id != id)
+                .FirstOrDefaultAsync();
+
+            if (currentTracking != null)
+            {
+                // Se o colaborador já está rastreando outra tarefa, encerre-a
+                currentTracking.EndTime = DateTime.UtcNow;
+                _dbContext.TimeTrackers.Update(currentTracking);
+            }
+
+            _dbContext.TimeTrackers.Update(timeTracker);
+            var result = await _dbContext.SaveChangesAsync();
+            return result > 0;
+        }
 
         public async Task<bool> DeleteTrackingAsync(Guid id)
         {

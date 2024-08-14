@@ -87,6 +87,28 @@ namespace SistemCrud.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTracking(Guid id, [FromBody] TimeTrackerUpdateDTO dto)
+        {
+            try
+            {
+                var result = await _timeTrackerService.UpdateTrackingAsync(id, dto);
+                if (result)
+                {
+                    return Ok(new { message = "Time tracking updated successfully." });
+                }
+                return BadRequest(new { message = "Failed to update time tracking." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTracking(Guid id)
         {

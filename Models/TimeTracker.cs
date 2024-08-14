@@ -15,7 +15,6 @@ namespace SistemCrud.Models
         public DateTime? UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-        [NotMapped]
         public TimeSpan? Duration => GetDuration();
 
         // Método para calcular a duração
