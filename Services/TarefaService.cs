@@ -33,6 +33,7 @@ namespace SistemCrud.Services
                     ProjectId = t.ProjectId,
                     CreatedAt = t.CreatedAt,
                     Status = t.Status,
+                    TimeTrackers = t.TimeTrackers,
                 })
                 .ToListAsync();
         }

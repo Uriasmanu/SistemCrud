@@ -1,4 +1,6 @@
-﻿namespace SistemCrud.DTOs
+﻿using SistemCrud.Models;
+
+namespace SistemCrud.DTOs
 {
     public class TarefaDTO
     {
@@ -8,5 +10,7 @@
         public string Descritiva { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid ProjectId { get; set; }
+        public ICollection<TimeTracker>? TimeTrackers { get; set; }
+
     }
 }
