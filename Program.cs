@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<UsuarioServices>();
-//builder.Services.AddScoped<CollaboratorServices>();
+builder.Services.AddScoped<CollaboratorServices>();
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddScoped<ProjectService>();
 

@@ -1,4 +1,6 @@
-﻿namespace SistemCrud.Models
+﻿using System.Text.Json.Serialization;
+
+namespace SistemCrud.Models
 {
     public class Tarefas
     {
@@ -6,6 +8,7 @@
         public string Name { get; set; }
         public string Descritiva { get; set; }
         public TaskStatus Status { get; set; }
+        [JsonIgnore]
         public Project Project { get; set; }
         public Guid ProjectId { get; set; }
         public DateTime CreatedAt { get; set; }

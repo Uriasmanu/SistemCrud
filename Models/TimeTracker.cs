@@ -7,10 +7,9 @@ namespace SistemCrud.Models
         public Guid Id { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public string TimeZoneId { get; set; }
         public Guid TarefasId { get; set; }
         public Tarefas Tarefas { get; set; }
-        public Guid? CollaboratorId { get; set; }
+        public Guid CollaboratorId { get; set; }
 
         public User User { get; set; }
 
