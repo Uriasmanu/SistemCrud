@@ -31,12 +31,15 @@ namespace SistemCrud.Controllers
                     return NotFound("Nenhum registro de tempo encontrado.");
                 }
             }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("End time must be greater than or equal to start time"))
+            {
+                return BadRequest("Há um problema com os registros de tempo. Verifique se todos os tempos de término são posteriores aos tempos de início.");
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
             }
         }
-
 
         [HttpPost("start")]
         public async Task<IActionResult> StartTracking([FromBody] TimeTrackerStartDTO dto)
@@ -69,8 +72,10 @@ namespace SistemCrud.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
+                var innerExceptionMessage = ex.InnerException?.Message ?? "Sem detalhes adicionais.";
+                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}. Detalhes adicionais: {innerExceptionMessage}");
             }
+
         }
 
         [HttpPost("end")]

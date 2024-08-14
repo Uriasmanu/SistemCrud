@@ -6,7 +6,7 @@ namespace SistemCrud.Models
     {
         public Guid Id { get; set; }
         public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public Guid TarefasId { get; set; }
         public Tarefas Tarefas { get; set; }
         public Guid CollaboratorId { get; set; }
@@ -16,17 +16,17 @@ namespace SistemCrud.Models
         public DateTime? DeletedAt { get; set; }
 
         [NotMapped]
-        public TimeSpan Duration => GetDuration();
+        public TimeSpan? Duration => GetDuration();
 
-        // Method to calculate the duration
-        public TimeSpan GetDuration()
+        // Método para calcular a duração
+        public TimeSpan? GetDuration()
         {
-            if (EndTime < StartTime)
+            if (EndTime.HasValue && EndTime.Value < StartTime)
             {
                 throw new InvalidOperationException("End time must be greater than or equal to start time.");
             }
 
-            return EndTime - StartTime;
+            return EndTime.HasValue ? EndTime.Value - StartTime : (TimeSpan?)null;
         }
 
 
