@@ -20,6 +20,7 @@ builder.Services.AddScoped<UsuarioServices>();
 builder.Services.AddScoped<CollaboratorServices>();
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<TimeTrackerService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer("Server=tcp:manarger-serve.database.windows.net,1433;Initial Catalog=api-Db;Persist Security Info=False;User ID=manoela;Password=sistem1#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=100;"));

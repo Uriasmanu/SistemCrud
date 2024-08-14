@@ -80,46 +80,7 @@ namespace SistemCrud.Controllers
             }
         }
 
-        // PUT: api/Tarefa/
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTarefa(Guid id, [FromBody] TarefaDTO tarefaDto)
-        {
-            if (id == Guid.Empty || tarefaDto == null)
-            {
-                return BadRequest("Invalid request data.");
-            }
-
-            try
-            {
-
-                var existingTarefa = await _tarefaService.GetTarefaByIdAsync(id);
-                if (existingTarefa == null)
-                {
-                    return NotFound("Tarefa não encontrada.");
-                }
-
-
-                var newStatus = tarefaDto.Status;
-
-                var tarefa = new Tarefas
-                {
-                    Id = id,
-                    Name = tarefaDto.Name,
-                    Descritiva = tarefaDto.Descritiva,
-                    ProjectId = tarefaDto.ProjectId
-
-                };
-
-                await _tarefaService.UpdateTarefaAsync(tarefa, newStatus);
-            }
-            catch (Exception ex)
-            {
-
-                return StatusCode(500, "Internal server error.");
-            }
-
-            return NoContent();
-        }
+        
 
         // DELETE: api/Tarefa/
         [HttpDelete("{id}")]

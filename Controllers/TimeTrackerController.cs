@@ -23,14 +23,35 @@ namespace SistemCrud.Controllers
                 return BadRequest("Invalid data.");
             }
 
-            var result = await _service.StartTrackingAsync(dto);
-
-            if (result)
+            try
             {
-                return Ok("Tracking started successfully.");
-            }
+                var result = await _service.StartTrackingAsync(dto);
 
-            return StatusCode(500, "An error occurred while starting tracking.");
+                if (result)
+                {
+                    return Ok("Tracking started successfully.");
+                }
+                else
+                {
+                    // Consider providing more details if available
+                    return StatusCode(500, "Failed to start tracking. Please try again later.");
+                }
+            }
+            catch (Exception ex) when (ex.Message.Contains("Tarefa não encontrada"))
+            {
+                // Mensagem de erro específica para tarefas não encontradas
+                return NotFound("Tarefa não encontrada. Verifique o ID da tarefa.");
+            }
+            catch (Exception ex) when (ex.Message.Contains("Colaborador não encontrado"))
+            {
+                // Mensagem de erro específica para colaboradores não encontrados
+                return NotFound("Colaborador não encontrado. Verifique o ID do colaborador.");
+            }
+            catch (Exception ex)
+            {
+                // Mensagem genérica para outros tipos de erro
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
         }
     }
 }

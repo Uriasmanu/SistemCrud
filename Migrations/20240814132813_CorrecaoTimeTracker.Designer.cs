@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SistemCrud.Data;
 
@@ -11,9 +12,11 @@ using SistemCrud.Data;
 namespace SistemCrud.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240814132813_CorrecaoTimeTracker")]
+    partial class CorrecaoTimeTracker
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,9 +147,6 @@ namespace SistemCrud.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CollaboratorId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -165,11 +165,19 @@ namespace SistemCrud.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CollaboratorId");
-
                     b.HasIndex("TarefasId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("TimeTrackers");
                 });
@@ -255,21 +263,29 @@ namespace SistemCrud.Migrations
 
             modelBuilder.Entity("SistemCrud.Models.TimeTracker", b =>
                 {
-                    b.HasOne("SistemCrud.Models.Collaborator", "Collaborator")
-                        .WithMany("TimeTrackers")
-                        .HasForeignKey("CollaboratorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("SistemCrud.Models.Tarefas", "Tarefas")
                         .WithMany("TimeTrackers")
                         .HasForeignKey("TarefasId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("SistemCrud.Models.Collaborator", "Collaborator")
+                        .WithMany("TimeTrackers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SistemCrud.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Collaborator");
 
                     b.Navigation("Tarefas");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SistemCrud.Models.Collaborator", b =>

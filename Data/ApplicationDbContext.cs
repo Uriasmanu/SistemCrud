@@ -37,7 +37,7 @@ namespace SistemCrud.Data
                 .HasOne(u => u.Collaborator)
                 .WithOne(c => c.User)
                 .HasForeignKey<Collaborator>(c => c.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configurando a relação Project -> Collaborator usando a entidade de junção
             modelBuilder.Entity<ProjectCollaborator>()
@@ -58,28 +58,28 @@ namespace SistemCrud.Data
                 .HasOne(t => t.Collaborator)
                 .WithMany(c => c.Tarefas)
                 .HasForeignKey(t => t.CollaboratorId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configurando a relação Tarefas -> Project
             modelBuilder.Entity<Tarefas>()
                 .HasOne(t => t.Project)
                 .WithMany(p => p.Tarefas)
                 .HasForeignKey(t => t.ProjectId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configurando a relação TimeTracker -> Tarefas
             modelBuilder.Entity<TimeTracker>()
                 .HasOne(tt => tt.Tarefas)
                 .WithMany(t => t.TimeTrackers)
                 .HasForeignKey(tt => tt.TarefasId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configurando a relação TimeTracker -> Collaborator
             modelBuilder.Entity<TimeTracker>()
                 .HasOne(tt => tt.Collaborator)
                 .WithMany(c => c.TimeTrackers)
-                .HasForeignKey(tt => tt.CollaboratorId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata
+                .HasForeignKey(tt => tt.CollaboratorId) 
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 

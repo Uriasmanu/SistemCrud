@@ -10,9 +10,6 @@ namespace SistemCrud.Models
         public Guid TarefasId { get; set; }
         public Tarefas Tarefas { get; set; }
         public Guid CollaboratorId { get; set; }
-
-        public User User { get; set; }
-
         public Collaborator Collaborator { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
