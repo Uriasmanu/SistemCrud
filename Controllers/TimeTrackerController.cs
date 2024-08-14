@@ -15,12 +15,35 @@ namespace SistemCrud.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrackings()
+        {
+            try
+            {
+                var trackings = await _service.GetAllTrackingsAsync();
+
+                if (trackings != null && trackings.Any())
+                {
+                    return Ok(trackings);
+                }
+                else
+                {
+                    return NotFound("Nenhum registro de tempo encontrado.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("start")]
         public async Task<IActionResult> StartTracking([FromBody] TimeTrackerStartDTO dto)
         {
             if (dto == null)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest("Dados inválidos.");
             }
 
             try
@@ -29,28 +52,89 @@ namespace SistemCrud.Controllers
 
                 if (result)
                 {
-                    return Ok("Tracking started successfully.");
+                    return Ok("Rastreamento iniciado com sucesso.");
                 }
                 else
                 {
-                    // Consider providing more details if available
-                    return StatusCode(500, "Failed to start tracking. Please try again later.");
+                    return StatusCode(500, "Falha ao iniciar o rastreamento. Por favor, tente novamente mais tarde.");
                 }
             }
             catch (Exception ex) when (ex.Message.Contains("Tarefa não encontrada"))
             {
-                // Mensagem de erro específica para tarefas não encontradas
                 return NotFound("Tarefa não encontrada. Verifique o ID da tarefa.");
             }
             catch (Exception ex) when (ex.Message.Contains("Colaborador não encontrado"))
             {
-                // Mensagem de erro específica para colaboradores não encontrados
                 return NotFound("Colaborador não encontrado. Verifique o ID do colaborador.");
             }
             catch (Exception ex)
             {
-                // Mensagem genérica para outros tipos de erro
-                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
+            }
+        }
+
+        [HttpPost("end")]
+        public async Task<IActionResult> EndTracking([FromBody] TimeTrackerEndDTO dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Dados inválidos.");
+            }
+
+            try
+            {
+                var result = await _service.EndTrackingAsync(dto);
+
+                if (result)
+                {
+                    return Ok("Rastreamento finalizado com sucesso.");
+                }
+                else
+                {
+                    return StatusCode(500, "Falha ao finalizar o rastreamento. Por favor, tente novamente mais tarde.");
+                }
+            }
+            catch (Exception ex) when (ex.Message.Contains("Tarefa não encontrada"))
+            {
+                return NotFound("Tarefa não encontrada. Verifique o ID da tarefa.");
+            }
+            catch (Exception ex) when (ex.Message.Contains("Colaborador não encontrado"))
+            {
+                return NotFound("Colaborador não encontrado. Verifique o ID do colaborador.");
+            }
+            catch (Exception ex) when (ex.Message.Contains("Registro de tempo não encontrado ou já finalizado"))
+            {
+                return NotFound("Registro de tempo não encontrado ou já finalizado. Verifique se o rastreamento foi iniciado e não está finalizado.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTracking(Guid id)
+        {
+            try
+            {
+                var result = await _service.DeleteTrackingAsync(id);
+
+                if (result)
+                {
+                    return Ok("Rastreamento deletado com sucesso.");
+                }
+                else
+                {
+                    return StatusCode(500, "Falha ao deletar o rastreamento. Por favor, tente novamente mais tarde.");
+                }
+            }
+            catch (Exception ex) when (ex.Message.Contains("Registro de tempo não encontrado"))
+            {
+                return NotFound("Registro de tempo não encontrado. Verifique o ID fornecido.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocorreu um erro inesperado: {ex.Message}");
             }
         }
     }
