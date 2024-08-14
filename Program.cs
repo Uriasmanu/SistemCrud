@@ -48,7 +48,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173")
+            policy.WithOrigins("http://localhost:5173", "https://task-manargement-il2auxpd9-uriasmanus-projects.vercel.app")
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
