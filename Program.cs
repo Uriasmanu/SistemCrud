@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<UsuarioServices>();
 //builder.Services.AddScoped<CollaboratorServices>();
 //builder.Services.AddScoped<TarefaService>();
-//builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<ProjectService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer("Server=tcp:manarger-serve.database.windows.net,1433;Initial Catalog=api-Db;Persist Security Info=False;User ID=manoela;Password=sistem1#;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=100;"));
@@ -48,7 +48,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173", "https://task-manargement-il2auxpd9-uriasmanus-projects.vercel.app")
+            policy.WithOrigins("http://localhost:5173", "https://task-manargement.vercel.app")
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
