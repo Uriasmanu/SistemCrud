@@ -14,7 +14,7 @@ namespace SistemCrud.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<TimeTracker>> GetAllTrackingsAsync()
+              public async Task<IEnumerable<TimeTracker>> GetAllTrackingsAsync()
         {
             return await _dbContext.TimeTrackers.ToListAsync();
         }
