@@ -49,9 +49,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173", "https://task-manargement.vercel.app")
+            policy.WithOrigins("http://localhost:5173", "https://task-manargement.vercel.app", "https://regal-dasik-72e600.netlify.app")
                   .AllowAnyMethod()
                   .AllowAnyHeader();
+                    
         });
 });
 

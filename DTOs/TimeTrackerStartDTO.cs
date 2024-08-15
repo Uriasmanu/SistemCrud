@@ -5,7 +5,7 @@ namespace SistemCrud.DTOs
     public class TimeTrackerStartDTO
     {
 
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } = DateTime.Now;
 
         public Guid TarefasId { get; set; }
         public Guid CollaboratorId { get; set; }

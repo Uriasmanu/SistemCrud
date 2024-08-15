@@ -94,9 +94,16 @@ namespace SistemCrud.Services
 
         public async Task DeleteTarefaAsync(Guid id)
         {
-            var tarefa = await _context.Tarefas.FindAsync(id);
+            var tarefa = await _context.Tarefas
+        .Include(t => t.TimeTrackers) // Carregar os TimeTrackers relacionados
+        .FirstOrDefaultAsync(t => t.Id == id);
+
             if (tarefa == null) throw new ArgumentException("Tarefa não encontrada");
 
+            // Remover todos os TimeTrackers associados
+            _context.TimeTrackers.RemoveRange(tarefa.TimeTrackers);
+
+            // Remover a tarefa
             _context.Tarefas.Remove(tarefa);
             await _context.SaveChangesAsync();
         }

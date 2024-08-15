@@ -52,11 +52,11 @@ namespace SistemCrud.Services
             var newTracking = new TimeTracker
             {
                 Id = Guid.NewGuid(),
-                StartTime = dto.StartTime,
+                StartTime = DateTime.SpecifyKind(dto.StartTime, DateTimeKind.Utc), // Garantir que StartTime esteja em UTC
                 EndTime = null, // Inicialmente null
                 TarefasId = dto.TarefasId,
                 CollaboratorId = dto.CollaboratorId,
-                CreatedAt = dto.CreatedAt
+                CreatedAt = DateTime.SpecifyKind(dto.CreatedAt, DateTimeKind.Utc) // Garantir que CreatedAt esteja em UTC
             };
 
             // Adicionar o novo rastreamento
@@ -99,7 +99,7 @@ namespace SistemCrud.Services
             }
 
             // Atualizar o EndTime do TimeTracker encontrado
-            timeTracker.EndTime = dto.EndTime;
+            timeTracker.EndTime = DateTime.SpecifyKind(dto.EndTime, DateTimeKind.Utc); // Garantir que EndTime esteja em UTC
 
             // Verificar a duração após a atualização
             if (timeTracker.GetDuration().HasValue && timeTracker.GetDuration().Value.TotalHours > 24)
@@ -111,6 +111,7 @@ namespace SistemCrud.Services
             var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
+
         public async Task<bool> UpdateTrackingAsync(Guid id, TimeTrackerUpdateDTO dto)
         {
             // Encontrar o TimeTracker pelo ID
@@ -135,8 +136,8 @@ namespace SistemCrud.Services
             }
 
             // Atualizar os campos de data de início e fim
-            timeTracker.StartTime = dto.StartTime;
-            timeTracker.EndTime = dto.EndTime;
+            timeTracker.StartTime = DateTime.SpecifyKind(dto.StartTime, DateTimeKind.Utc); // Garantir que StartTime esteja em UTC
+            timeTracker.EndTime = DateTime.SpecifyKind((DateTime)dto.EndTime, DateTimeKind.Utc); // Garantir que EndTime esteja em UTC
 
             // Verificar se a duração excede 24 horas
             if (timeTracker.GetDuration().HasValue && timeTracker.GetDuration().Value.TotalHours > 24)

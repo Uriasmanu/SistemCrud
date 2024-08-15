@@ -8,6 +8,7 @@ using System.Text;
 
 namespace SistemCrud.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class ContaController : ControllerBase
