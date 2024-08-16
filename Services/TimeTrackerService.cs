@@ -19,6 +19,29 @@ namespace SistemCrud.Services
             return await _dbContext.TimeTrackers.ToListAsync();
         }
 
+        public async Task<IEnumerable<TimeTracker>> GetTrackingsByCollaboratorIdAsync(Guid collaboratorId)
+        {
+            // Verificar se o colaborador existe
+            var colaboradorExists = await _dbContext.Collaborators.AnyAsync(c => c.Id == collaboratorId);
+            if (!colaboradorExists)
+            {
+                throw new Exception("Colaborador não encontrado.");
+            }
+
+            // Buscar todos os TimeTrackers com o mesmo CollaboratorId
+            var timeTrackers = await _dbContext.TimeTrackers
+                .Where(tt => tt.CollaboratorId == collaboratorId)
+                .ToListAsync();
+
+            // Verificar se não há rastreamentos encontrados
+            if (!timeTrackers.Any())
+            {
+                throw new Exception("Nenhum rastreamento encontrado para o colaborador especificado.");
+            }
+
+            return timeTrackers;
+        }
+
         public async Task<bool> StartTrackingAsync(TimeTrackerStartDTO dto)
         {
             // Verificar se a tarefa existe
@@ -161,6 +184,8 @@ namespace SistemCrud.Services
             var result = await _dbContext.SaveChangesAsync();
             return result > 0;
         }
+
+
 
         public async Task<bool> DeleteTrackingAsync(Guid id)
         {

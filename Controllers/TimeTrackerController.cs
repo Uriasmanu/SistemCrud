@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemCrud.DTOs;
+using SistemCrud.Models;
 using SistemCrud.Services;
 using System;
 using System.Threading.Tasks;
@@ -15,6 +16,21 @@ namespace SistemCrud.Controllers
         public TimeTrackerController(TimeTrackerService timeTrackerService)
         {
             _timeTrackerService = timeTrackerService;
+        }
+
+        // GET api/timetracker/{collaboratorId}
+        [HttpGet("{collaboratorId}")]
+        public async Task<IActionResult> GetTrackingsByCollaboratorId(Guid collaboratorId)
+        {
+            try
+            {
+                var timeTrackers = await _timeTrackerService.GetTrackingsByCollaboratorIdAsync(collaboratorId);
+                return Ok(timeTrackers);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpGet]
